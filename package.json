@@ -1,0 +1,13 @@
+{
+  "name": "hot-water",
+  "private": true,
+  "version": "0.1.0",
+  "description": "A short animated explainer: where hot water comes from, how it stays hot, and what pushes it up the pipe.",
+  "type": "module",
+  "scripts": {
+    "render": "node render.mjs"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.63.0"
+  }
+}

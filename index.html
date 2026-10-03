@@ -1,0 +1,656 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Where does hot water come from?</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #0d1319; overflow: hidden; }
+  #stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; overflow: hidden;
+    font-family: "Avenir Next", "Avenir", "Helvetica Neue", sans-serif; background: #dcecf3; }
+  svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  svg text { font-family: "Avenir Next", "Avenir", "Helvetica Neue", sans-serif; font-weight: 600; }
+  .lbl { fill: #1d2a35; stroke: #fffaf0; stroke-width: 3px; paint-order: stroke; stroke-linejoin: round; }
+  #title { position: absolute; top: 54px; left: 0; right: 0; text-align: center; font-size: 72px; font-weight: 700;
+    color: #1d2a35; letter-spacing: -1px; }
+  #cap { position: absolute; bottom: 46px; left: 50%; transform: translateX(-50%); width: max-content; max-width: 1560px;
+    box-sizing: border-box; padding: 20px 38px; border-radius: 20px; background: rgba(20, 30, 40, .9); color: #fff;
+    font-size: 38px; line-height: 1.32; font-weight: 600; text-align: center; text-wrap: balance; }
+  #recap { position: absolute; inset: 0; background: rgba(18, 27, 36, .93); color: #fff; display: flex; flex-direction: column;
+    justify-content: center; padding: 0 220px; gap: 44px; }
+  #recap h2 { margin: 0 0 6px; font-size: 30px; letter-spacing: 3px; text-transform: uppercase; }
+  #recap p { margin: 0; font-size: 46px; line-height: 1.25; font-weight: 600; }
+  #recap .foot { font-size: 28px; font-weight: 500; color: #a9b8c4; }
+
+  /* ?style=comic : 1950s pop-art comic restyle */
+  @font-face { font-family: "Bangers"; src: url(fonts/Bangers-Regular.ttf); }
+  @font-face { font-family: "Comic Neue"; font-weight: 700; src: url(fonts/ComicNeue-Bold.ttf); }
+  body.comic #stage { font-family: "Comic Neue", "Chalkboard SE", sans-serif; }
+  body.comic #stage::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+    box-shadow: inset 0 0 0 14px #fff, inset 0 0 0 21px #000; }
+  body.comic svg text { font-family: "Comic Neue", "Chalkboard SE", sans-serif; font-weight: 700; text-transform: uppercase; }
+  body.comic svg text.big { font-family: "Bangers", Impact, sans-serif; font-weight: 400; letter-spacing: 1.5px; }
+  body.comic .lbl { fill: #000; stroke: #fff; stroke-width: 7px; }
+  body.comic #title { top: 44px; font-family: "Bangers", Impact, sans-serif; font-weight: 400; font-size: 118px; letter-spacing: 3px;
+    color: #ffd500; text-transform: uppercase; -webkit-text-stroke: 5px #000; paint-order: stroke fill; text-shadow: 8px 8px 0 #000; }
+  body.comic #cap { background: #ffd500; color: #000; border: 6px solid #000; border-radius: 0; box-shadow: 11px 11px 0 #000;
+    bottom: 56px; padding: 16px 34px; font-size: 33px; line-height: 1.25; font-weight: 700; text-transform: uppercase; }
+  body.comic #recap { color: #000; gap: 30px; padding: 0 200px;
+    background: radial-gradient(circle, #0a5fd6 30%, transparent 32%) 0 0 / 22px 22px,
+      radial-gradient(circle, #0a5fd6 30%, transparent 32%) 11px 11px / 22px 22px, #fff; }
+  body.comic #recap .row { background: #fff; border: 6px solid #000; box-shadow: 11px 11px 0 #000; padding: 18px 30px; }
+  body.comic #recap h2 { color: #e4002b !important; font-family: "Bangers", Impact, sans-serif; font-weight: 400; font-size: 46px; margin: 0; }
+  body.comic #recap p { font-size: 36px; text-transform: uppercase; font-weight: 700; }
+  body.comic #recap .foot { background: #ffd500; color: #000; font-size: 25px; font-weight: 700; text-transform: uppercase; }
+  #vShadow { display: none; }
+  body.comic #vShadow { display: block; }
+  .burst { position: absolute; width: 0; height: 0; }
+  .burst svg { position: absolute; inset: auto; left: 0; top: 0; width: 2px; height: 2px; overflow: visible; }
+
+  /* ?style=blueprint : technical drawing */
+  body.blueprint #stage { background: #12408c; font-family: "DIN Alternate", "DIN Condensed", "Avenir Next Condensed", sans-serif; }
+  body.blueprint #stage::after { content: ""; position: absolute; inset: 16px; border: 2px solid rgba(234, 243, 255, .7); pointer-events: none; }
+  body.blueprint svg text { font-family: "DIN Alternate", "DIN Condensed", sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; }
+  body.blueprint .lbl { fill: #eaf3ff; stroke: #12408c; stroke-width: 4px; }
+  body.blueprint #title { font-family: "DIN Condensed", "DIN Alternate", sans-serif; color: #eaf3ff; text-transform: uppercase; letter-spacing: 6px; font-size: 84px; }
+  body.blueprint #cap { background: rgba(9, 38, 88, .94); border: 2px solid #eaf3ff; border-radius: 0; font-size: 36px; font-weight: 700; color: #eaf3ff;
+    outline: 2px solid #eaf3ff; outline-offset: 5px; bottom: 54px; }
+  body.blueprint #recap { background: rgba(14, 52, 116, .97); }
+  #stamp { display: none; }
+  body.blueprint #stamp { display: block; position: absolute; top: 34px; right: 34px; padding: 10px 16px; border: 2px solid #eaf3ff; background: #12408c;
+    color: #eaf3ff; font-size: 17px; font-weight: 700; letter-spacing: 2px; line-height: 1.5; text-transform: uppercase; text-align: right; }
+
+  /* ?style=textbook : mid-century educational print */
+  body.textbook #stage { background: #efe6d0; font-family: "Futura", "Avenir Next", sans-serif; }
+  body.textbook svg text { font-family: "Futura", "Avenir Next", sans-serif; font-weight: 500; }
+  body.textbook .lbl { fill: #2b2a28; stroke: #f6efdd; stroke-width: 4px; }
+  body.textbook #title { font-family: "Futura", sans-serif; font-weight: 700; color: #2b2a28; letter-spacing: 0; }
+  body.textbook #cap { background: #f6efdd; color: #2b2a28; border: 3px solid #2b2a28; border-radius: 0; font-family: "Futura", sans-serif;
+    font-weight: 500; font-size: 35px; box-shadow: 8px 8px 0 #c1502e; bottom: 54px; }
+  body.textbook #cap b { color: #c1502e; font-weight: 700; letter-spacing: 2px; font-size: 26px; margin-right: 14px; vertical-align: 3px; }
+  body.textbook #recap { background: rgba(239, 230, 208, .97); color: #2b2a28; }
+  body.textbook #recap h2 { color: #c1502e !important; }
+  body.textbook #recap { padding: 0 190px; }
+  body.textbook #recap p { font-size: 39px; }
+  body.textbook #recap .foot { color: #6b6557; }
+  #grain { display: none; }
+  body.textbook #grain { display: block; position: absolute; inset: 0; pointer-events: none; mix-blend-mode: multiply; opacity: .5;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 .45  0 0 0 0 .4  0 0 0 0 .3  0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)'/%3E%3C/svg%3E"); }
+</style>
+</head>
+<body>
+<div id="stage">
+<svg id="svg" viewBox="0 200 1920 1080" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="earth" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8a6f55"/><stop offset="1" stop-color="#5e4937"/>
+    </linearGradient>
+    <linearGradient id="tankWater" x1="0" y1="0" x2="0" y2="1">
+      <stop id="tw0" offset="0" stop-color="#e8502a"/>
+      <stop id="tw1" offset=".88" stop-color="#f08c3c"/>
+      <stop id="tw2" offset="1" stop-color="#f08c3c"/>
+      <stop id="tw3" offset="1" stop-color="#f08c3c"/>
+    </linearGradient>
+    <clipPath id="tankClip"><rect x="980" y="790" width="180" height="155" rx="10"/></clipPath>
+    <pattern id="dotsBlue" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="#fff"/>
+      <circle cx="2" cy="2" r="1.5" fill="#0a5fd6"/><circle cx="6" cy="6" r="1.5" fill="#0a5fd6"/></pattern>
+    <pattern id="dotsRed" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="#fff"/>
+      <circle cx="2" cy="2" r="1.3" fill="#e4002b"/><circle cx="6" cy="6" r="1.3" fill="#e4002b"/></pattern>
+    <pattern id="dotsBlack" width="9" height="9" patternUnits="userSpaceOnUse"><rect width="9" height="9" fill="#fff"/>
+      <circle cx="2.25" cy="2.25" r="1.1" fill="#000"/><circle cx="6.75" cy="6.75" r="1.1" fill="#000"/></pattern>
+    <pattern id="dotsEarth" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="#ffd500"/>
+      <circle cx="2" cy="2" r="1.6" fill="#e4002b"/><circle cx="6" cy="6" r="1.6" fill="#e4002b"/></pattern>
+    <pattern id="bpGrid" width="40" height="40" patternUnits="userSpaceOnUse"><rect width="40" height="40" fill="#12408c"/>
+      <path d="M10,0 V40 M20,0 V40 M30,0 V40 M0,10 H40 M0,20 H40 M0,30 H40" stroke="#fff" stroke-opacity=".05" stroke-width="1"/>
+      <path d="M0,0 V40 M0,0 H40" stroke="#fff" stroke-opacity=".16" stroke-width="1.2"/></pattern>
+    <pattern id="bpHatch" width="16" height="16" patternUnits="userSpaceOnUse"><rect width="16" height="16" fill="#12408c"/>
+      <path d="M-4,4 L4,-4 M0,16 L16,0 M12,20 L20,12" stroke="#fff" stroke-opacity=".2" stroke-width="1.2"/></pattern>
+    <pattern id="bpInsul" width="7" height="7" patternUnits="userSpaceOnUse"><rect width="7" height="7" fill="#12408c"/>
+      <path d="M0,7 L7,0 M0,0 L7,7" stroke="#fff" stroke-opacity=".55" stroke-width=".8"/></pattern>
+    <filter id="glow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="5"/></filter>
+  </defs>
+
+  <!-- sky, ground -->
+  <rect x="-200" y="0" width="2400" height="720" fill="#dcecf3"/>
+  <circle cx="1740" cy="300" r="46" fill="#ffe9a8"/>
+  <g id="clouds" fill="#fff" opacity=".9">
+    <g id="cloud1"><ellipse cx="800" cy="262" rx="70" ry="22"/><ellipse cx="840" cy="246" rx="44" ry="22"/></g>
+    <g id="cloud2"><ellipse cx="1320" cy="250" rx="60" ry="18"/><ellipse cx="1290" cy="238" rx="36" ry="18"/></g>
+  </g>
+  <rect x="-200" y="700" width="2400" height="700" fill="url(#earth)"/>
+  <rect x="-200" y="700" width="2400" height="14" fill="#7fae5e"/>
+  <rect x="-200" y="700" width="760" height="14" fill="#59626b"/>
+
+  <!-- trees -->
+  <g><rect x="434" y="630" width="12" height="70" fill="#6f5238"/><circle cx="440" cy="600" r="46" fill="#6aa257"/></g>
+  <g><rect x="1694" y="610" width="14" height="90" fill="#6f5238"/><circle cx="1701" cy="570" r="58" fill="#5f994f"/></g>
+
+  <!-- water tower -->
+  <g stroke="#1d2a35" stroke-width="5" stroke-linecap="round" fill="none">
+    <path d="M110,700 L122,350 M250,700 L238,350 M114,580 L246,580 M118,460 L242,460 M114,580 L242,460 M246,580 L118,460"/>
+  </g>
+  <path d="M84,264 L180,216 L276,264 Z" fill="#b9484a" stroke="#1d2a35" stroke-width="5" stroke-linejoin="round"/>
+  <rect x="90" y="262" width="180" height="90" rx="16" fill="#e7eef2" stroke="#1d2a35" stroke-width="5"/>
+  <rect x="98" y="286" width="164" height="58" rx="9" fill="#2f8fd8"/>
+
+  <!-- house shell -->
+  <path d="M600,404 L1080,250 L1560,404 Z" fill="#b9484a" stroke="#1d2a35" stroke-width="6" stroke-linejoin="round"/>
+  <rect x="640" y="400" width="880" height="300" fill="#eadfcb"/>
+  <rect x="640" y="700" width="880" height="300" fill="#cfcac2"/>
+  <rect x="640" y="1000" width="880" height="12" fill="#8d9499"/>
+  <rect x="640" y="694" width="880" height="12" fill="#a57f58"/>
+  <rect x="640" y="400" width="880" height="606" fill="none" stroke="#1d2a35" stroke-width="8"/>
+  <!-- ground floor decor -->
+  <rect x="700" y="548" width="76" height="146" fill="#8c6a4a" stroke="#1d2a35" stroke-width="4"/><circle cx="764" cy="625" r="4" fill="#f3d27a"/>
+  <rect x="850" y="470" width="160" height="110" fill="#bfe1ef" stroke="#1d2a35" stroke-width="5"/>
+  <path d="M930,470 V580 M850,525 H1010" stroke="#1d2a35" stroke-width="4"/>
+  <rect x="1090" y="460" width="90" height="64" fill="#f6efe3" stroke="#1d2a35" stroke-width="4"/>
+  <path d="M1098,512 L1122,484 L1140,502 L1154,490 L1172,512 Z" fill="#7fae5e"/>
+  <!-- basement decor -->
+  <rect x="690" y="940" width="70" height="60" fill="#c9a36f" stroke="#1d2a35" stroke-width="4"/>
+  <rect x="768" y="956" width="56" height="44" fill="#c9a36f" stroke="#1d2a35" stroke-width="4"/>
+  <rect x="706" y="892" width="52" height="48" fill="#d6b582" stroke="#1d2a35" stroke-width="4"/>
+
+  <!-- sink cabinet -->
+  <rect x="1280" y="590" width="220" height="106" fill="#c99a6b" stroke="#1d2a35" stroke-width="4"/>
+  <rect x="1292" y="600" width="196" height="96" fill="#7d5f43"/>
+  <path d="M1443,640 V670 Q1443,684 1457,684 H1500" fill="none" stroke="#1d2a35" stroke-width="12"/>
+  <path d="M1443,640 V670 Q1443,684 1457,684 H1500" fill="none" stroke="#b8c2c9" stroke-width="7"/>
+  <path d="M1400,590 V628 Q1400,642 1414,642 H1472 Q1486,642 1486,628 V590 Z" fill="#fbfbf8" stroke="#1d2a35" stroke-width="4"/>
+  <rect id="pool" x="1404" y="634" width="78" height="6" rx="3" fill="#8fc0e6"/>
+  <rect x="1270" y="582" width="130" height="10" fill="#f2f2ee" stroke="#1d2a35" stroke-width="4"/>
+  <rect x="1486" y="582" width="24" height="10" fill="#f2f2ee" stroke="#1d2a35" stroke-width="4"/>
+
+  <!-- pipes -->
+  <g fill="none" stroke-linejoin="round" stroke-linecap="butt">
+    <path d="M180,350 L180,1040 L1250,1040 L1250,740" stroke="#1d2a35" stroke-width="20"/>
+    <path d="M1250,740 L1120,740 L1120,792" stroke="#1d2a35" stroke-width="14"/>
+    <path d="M1250,740 L1382,740 L1382,584" stroke="#1d2a35" stroke-width="14"/>
+    <path d="M1020,792 L1020,720 L1318,720 L1318,584" stroke="#1d2a35" stroke-width="14"/>
+    <path id="mainW" d="M180,350 L180,1040 L1250,1040 L1250,740" stroke="#2f8fd8" stroke-width="12"/>
+    <path d="M1250,746 L1250,740 L1382,740 L1382,584" stroke="#2f8fd8" stroke-width="8"/>
+    <path id="coldTankW" d="M1250,740 L1120,740 L1120,792" stroke="#2f8fd8" stroke-width="8"/>
+    <path id="hotW" d="M1020,792 L1020,720 L1318,720 L1318,584" stroke="#e8502a" stroke-width="8"/>
+    <path id="hotFront" d="M1020,792 L1020,720 L1318,720 L1318,584" stroke="#e8502a" stroke-width="8"/>
+    <g id="flows" stroke="#fff" stroke-opacity=".7" stroke-linecap="round" stroke-dasharray="7 17">
+      <path class="flow" d="M180,350 L180,1040 L1250,1040 L1250,740" stroke-width="4"/>
+      <path class="flow" d="M1250,740 L1120,740 L1120,792" stroke-width="3"/>
+      <path class="flow" d="M1020,792 L1020,720 L1318,720 L1318,584" stroke-width="3"/>
+    </g>
+  </g>
+  <g id="chev" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></g>
+
+  <!-- water heater -->
+  <rect x="972" y="993" width="14" height="8" fill="#1d2a35"/><rect x="1154" y="993" width="14" height="8" fill="#1d2a35"/>
+  <rect x="960" y="770" width="220" height="225" rx="14" fill="#c3ced6" stroke="#1d2a35" stroke-width="5"/>
+  <rect x="968" y="778" width="204" height="174" rx="12" fill="#f3d98b"/>
+  <rect x="980" y="790" width="180" height="155" rx="10" fill="url(#tankWater)" stroke="#1d2a35" stroke-width="3"/>
+  <g id="bubbles" clip-path="url(#tankClip)" fill="#fff"></g>
+  <rect x="976" y="957" width="188" height="32" rx="6" fill="#2a2f36"/>
+  <rect x="1000" y="982" width="140" height="4" rx="2" fill="#6b7480"/>
+  <g id="flames"></g>
+  <!-- dip tube -->
+  <path d="M1120,788 L1120,932" fill="none" stroke="#1d2a35" stroke-width="10"/>
+  <path d="M1120,788 L1120,932" fill="none" stroke="#2f8fd8" stroke-width="5"/>
+  <path class="flow" d="M1120,788 L1120,932" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="7 17"/>
+  <!-- thermostat -->
+  <rect x="918" y="868" width="50" height="34" rx="5" fill="#1d2a35"/>
+  <circle id="led" cx="927" cy="876" r="3" fill="#58d68d"/>
+  <text id="temp" x="945" y="894" text-anchor="middle" font-size="12" fill="#fff">120°F</text>
+  <text id="click" class="lbl nocomic" x="914" y="858" text-anchor="middle" font-size="11" font-style="italic">click!</text>
+
+  <!-- faucet -->
+  <rect id="stream" x="1426" y="544" width="8" height="0" rx="3" fill="#8fc0e6"/>
+  <g id="steam" fill="#fff" stroke="#c9d3da" stroke-width=".6"></g>
+  <path d="M1350,574 L1350,530 Q1350,500 1380,500 L1402,500 Q1430,500 1430,528 L1430,546" fill="none" stroke="#1d2a35" stroke-width="15" stroke-linejoin="round"/>
+  <path d="M1350,574 L1350,530 Q1350,500 1380,500 L1402,500 Q1430,500 1430,528 L1430,544" fill="none" stroke="#b8c6d0" stroke-width="9" stroke-linejoin="round"/>
+  <rect x="1314" y="556" width="8" height="18" fill="#1d2a35"/><rect x="1378" y="556" width="8" height="18" fill="#1d2a35"/>
+  <rect x="1302" y="571" width="96" height="12" rx="5" fill="#b8c6d0" stroke="#1d2a35" stroke-width="3"/>
+  <circle id="ring" cx="1318" cy="556" r="20" fill="none" stroke="#ffb300" stroke-width="3"/>
+  <g id="dialHot" transform="translate(1318 556)">
+    <rect x="-17" y="-3.5" width="34" height="7" rx="3.5" fill="#b8c6d0" stroke="#1d2a35" stroke-width="2.5"/>
+    <rect x="-3.5" y="-17" width="7" height="34" rx="3.5" fill="#b8c6d0" stroke="#1d2a35" stroke-width="2.5"/>
+    <circle r="7" fill="#e8502a" stroke="#1d2a35" stroke-width="2.5"/><circle cx="13" r="1.6" fill="#1d2a35"/>
+  </g>
+  <g transform="translate(1382 556)">
+    <rect x="-17" y="-3.5" width="34" height="7" rx="3.5" fill="#b8c6d0" stroke="#1d2a35" stroke-width="2.5"/>
+    <rect x="-3.5" y="-17" width="7" height="34" rx="3.5" fill="#b8c6d0" stroke="#1d2a35" stroke-width="2.5"/>
+    <circle r="7" fill="#2f8fd8" stroke="#1d2a35" stroke-width="2.5"/>
+  </g>
+  <g id="hint">
+    <path d="M1297,571 A26,26 0 0 1 1303,535" fill="none" stroke="#e8502a" stroke-width="3" stroke-linecap="round"/>
+    <path d="M1296,539 L1304,533 L1305,543 Z" fill="#e8502a" stroke="#e8502a" stroke-width="2" stroke-linejoin="round"/>
+    <text class="lbl" x="1284" y="557" text-anchor="end" font-size="11" style="fill:#c63d1c">HOT</text>
+  </g>
+
+  <!-- tracer -->
+  <g id="tracer"><circle r="16" fill="#ffd54a" filter="url(#glow)"/><circle r="7" fill="#fff" stroke="#ffb300" stroke-width="3"/></g>
+
+  <!-- labels -->
+  <g id="lHeater"><text class="lbl big" x="946" y="820" text-anchor="end" font-size="24">WATER HEATER</text>
+    <text class="lbl" x="946" y="844" text-anchor="end" font-size="16" font-weight="500">40–50 gallons, always hot</text></g>
+  <g id="lPorts">
+    <text class="lbl" x="1006" y="762" text-anchor="end" font-size="10" style="fill:#c63d1c">HOT OUT ↑</text>
+    <text class="lbl" x="1134" y="762" font-size="10" style="fill:#1f6fb0">↓ COLD IN</text></g>
+  <g id="lDip"><text x="1108" y="868" text-anchor="end" font-size="9" fill="#fff">dip tube carries</text>
+    <text x="1108" y="880" text-anchor="end" font-size="9" fill="#fff">cold to the bottom</text>
+    <text x="1070" y="812" text-anchor="middle" font-size="9" fill="#fff">hottest water on top</text></g>
+  <g id="lIns"><path d="M1174,850 H1200" stroke="#1d2a35" stroke-width="1.5"/><text class="lbl" x="1204" y="853" font-size="10">foam insulation</text></g>
+  <g id="lTherm"><text class="lbl" x="943" y="916" text-anchor="middle" font-size="10">thermostat</text></g>
+  <g id="lBurn"><path d="M1164,973 H1200" stroke="#1d2a35" stroke-width="1.5"/><text class="lbl" x="1204" y="976" font-size="10">burner</text>
+    <text class="lbl" x="1204" y="988" font-size="8" font-weight="500">(or electric element)</text></g>
+  <g id="lCity"><text class="lbl big" x="300" y="300" font-size="28">CITY WATER SUPPLY</text>
+    <text class="lbl" x="300" y="330" font-size="20" font-weight="500">towers and pumps keep the mains full</text></g>
+  <g id="lPsi"><rect x="250" y="926" width="350" height="86" rx="14" fill="#1d2a35"/>
+    <text class="big" x="425" y="964" text-anchor="middle" font-size="30" fill="#fff">≈ 50 psi, always pushing</text>
+    <text x="425" y="994" text-anchor="middle" font-size="19" font-weight="500" fill="#a9c7dd">enough to lift water 100+ ft</text></g>
+  <g id="lPush"><text class="lbl" x="1266" y="900" font-size="16" style="fill:#1f6fb0">cold water pushed in</text>
+    <text class="lbl" x="1040" y="684" font-size="16" style="fill:#c63d1c">hot water pushed out</text></g>
+  <g id="lCool"><path d="M1168,690 V712" stroke="#1d2a35" stroke-width="2"/>
+    <text class="lbl" x="1168" y="682" text-anchor="middle" font-size="17">this water went cold</text></g>
+</svg>
+
+<!-- faucet valve cutaway, shown over the wall beside the sink -->
+<svg id="valve" viewBox="0 0 1920 1080">
+  <defs><clipPath id="vClip"><rect x="0" y="0" width="940" height="730" rx="26"/></clipPath></defs>
+  <path d="M1010,500 L1236,526" stroke="#1d2a35" stroke-width="5" stroke-dasharray="4 12" stroke-linecap="round"/>
+  <g transform="translate(70 140)">
+    <rect id="vShadow" x="14" y="14" width="940" height="730" rx="26" fill="#000"/>
+    <rect x="0" y="0" width="940" height="730" rx="26" fill="#fffaf0" stroke="#1d2a35" stroke-width="6"/>
+    <g clip-path="url(#vClip)">
+      <g transform="translate(0 30)">
+        <!-- brass body, cavity, water -->
+        <path d="M300,210 H580 V340 H960 V480 H510 V760 H370 V480 H300 Z" fill="#d9b25c" stroke="#1d2a35" stroke-width="5" stroke-linejoin="round"/>
+        <path id="vCavity" d="M330,300 H550 V370 H960 V450 H475 V760 H405 V450 H330 Z" fill="#eef2f4" stroke="#1d2a35" stroke-width="4" stroke-linejoin="round"/>
+        <rect x="407" y="450" width="66" height="310" fill="#e8502a"/>
+        <path id="vWater" d="M332,302 H548 V372 H960 V448 H473 V452 H407 V448 H332 Z" fill="#e8502a"/>
+        <path id="vFlow" d="M440,725 L440,424 L548,416 L955,410" fill="none" stroke="#fff" stroke-opacity=".75" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="12 24"/>
+        <g id="vPress" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M440,560 V490 M424,506 L440,490 L456,506"/><path d="M440,680 V610 M424,626 L440,610 L456,626"/>
+        </g>
+        <!-- stem, washer and handle rise together -->
+        <g id="vMove">
+          <rect x="426" y="140" width="28" height="282" fill="#b8c6d0" stroke="#1d2a35" stroke-width="4"/>
+          <rect x="402" y="418" width="76" height="14" rx="3" fill="#b8c6d0" stroke="#1d2a35" stroke-width="4"/>
+          <rect x="395" y="430" width="90" height="20" rx="5" fill="#3a3f46" stroke="#1d2a35" stroke-width="4"/>
+          <rect id="vBar" x="320" y="107" width="240" height="26" rx="13" fill="#b8c6d0" stroke="#1d2a35" stroke-width="4"/>
+          <rect x="420" y="98" width="40" height="50" rx="8" fill="#b8c6d0" stroke="#1d2a35" stroke-width="4"/>
+          <circle cx="440" cy="120" r="8" fill="#e8502a" stroke="#1d2a35" stroke-width="3"/>
+          <path d="M300,440 H393" stroke="#1d2a35" stroke-width="2.5"/>
+          <text x="292" y="448" text-anchor="end" font-size="24" fill="#1d2a35">rubber washer</text>
+        </g>
+        <!-- bonnet with threads -->
+        <rect x="330" y="210" width="96" height="90" fill="#c9a24a"/><rect x="454" y="210" width="96" height="90" fill="#c9a24a"/>
+        <path d="M426,218 l28,9 M426,232 l28,9 M426,246 l28,9 M426,260 l28,9 M426,274 l28,9 M426,288 l28,9" stroke="#1d2a35" stroke-width="3.5"/>
+        <path d="M330,300 H426 M454,300 H550" stroke="#1d2a35" stroke-width="4"/>
+        <g id="vTurn" fill="none" stroke="#e8502a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M352,66 A92,22 0 0 1 528,66"/><path d="M512,52 L530,67 L508,74"/>
+        </g>
+        <path d="M456,182 H592" stroke="#1d2a35" stroke-width="2.5"/>
+        <text x="600" y="190" font-size="24" fill="#1d2a35">threaded stem</text>
+        <path d="M478,453 L560,548" stroke="#1d2a35" stroke-width="2.5"/>
+        <text x="566" y="566" font-size="24" fill="#1d2a35">valve seat (the opening)</text>
+        <text x="356" y="600" text-anchor="end" font-size="24" fill="#c63d1c">hot water,</text>
+        <text x="356" y="630" text-anchor="end" font-size="24" fill="#c63d1c">under pressure</text>
+        <text x="920" y="326" text-anchor="end" font-size="24" fill="#1d2a35">to the spout →</text>
+      </g>
+    </g>
+    <text class="big" x="38" y="62" font-size="30" font-weight="700" fill="#1d2a35" style="letter-spacing:2px">INSIDE THE HOT TAP</text>
+    <rect id="vPill" x="742" y="28" width="164" height="50" rx="25" fill="#1d2a35"/>
+    <text id="vState" class="big" x="824" y="63" text-anchor="middle" font-size="26" font-weight="700" fill="#fff" style="letter-spacing:2px">CLOSED</text>
+    <g id="vFoot" font-size="19" font-weight="500" fill="#5a6772">
+      <text x="566" y="668">Newer faucets slide two ceramic discs</text>
+      <text x="566" y="694">until their holes line up. Same idea.</text>
+    </g>
+  </g>
+</svg>
+
+<div id="title">Where does hot water come from?</div>
+<div id="cap"></div>
+<div id="bursts"></div>
+<div id="grain"></div>
+<div id="stamp">Domestic hot water<br>Section A–A · not to scale</div>
+<div id="recap">
+  <div class="row"><h2 style="color:#ff8a5c">Where it comes from</h2><p>A water heater: an insulated tank in the basement, garage or closet.</p></div>
+  <div class="row"><h2 style="color:#ffd54a">How it stays hot</h2><p>Foam insulation, plus a thermostat that reheats it whenever it cools.</p></div>
+  <div class="row"><h2 style="color:#6db9f2">How it gets up the pipe</h2><p>City water pressure pushes cold in at the bottom, and hot out the top.</p></div>
+  <div class="row foot">Tankless heaters skip the tank and heat the water as it flows through. Same pressure, same pipes.</div>
+</div>
+</div>
+
+<script>
+const DURATION = 59, FPS = 30
+// the valve close-up is spliced in at INS0: story time (t) freezes there while real time (rt) keeps running
+const INS0 = 30.3, INS = 11
+const $ = (id) => document.getElementById(id)
+const svg = $('svg')
+const NS = 'http://www.w3.org/2000/svg'
+
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x))
+const ease = (x) => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2
+const lerp = (a, b, p) => a + (b - a) * p
+const mix = (c1, c2, p) => `rgb(${c1.map((v, i) => Math.round(lerp(v, c2[i], p))).join(',')})`
+const win = (t, a, b, fade = .4) => clamp((t - a) / fade) * clamp((b - t) / fade)
+// piecewise interpolation over [time, value] keyframes
+function kf(t, keys, fn = (x) => x) {
+  if (t <= keys[0][0]) return keys[0][1]
+  for (let i = 1; i < keys.length; i++) {
+    if (t <= keys[i][0]) {
+      const [t0, v0] = keys[i - 1], [t1, v1] = keys[i]
+      return lerp(v0, v1, fn((t - t0) / (t1 - t0)))
+    }
+  }
+  return keys[keys.length - 1][1]
+}
+
+const STYLE = new URLSearchParams(location.search).get('style') || ''
+const COMIC = STYLE === 'comic'
+// colours the animation sets at runtime, per style
+const PALETTE = {
+  hot: [232, 80, 42], warm: [240, 140, 60], cold: [47, 143, 216], luke: [150, 160, 185], streamCold: [140, 190, 232], streamHot: [244, 150, 110],
+  ink: '#1d2a35', hotHex: '#e8502a', ledOn: '#ff9f2e', ledOff: '#58d68d',
+  ...{
+    comic: { hot: [228, 0, 43], warm: [255, 150, 0], cold: [10, 95, 214], luke: [150, 190, 245], streamCold: [10, 95, 214], streamHot: [228, 0, 43],
+      ink: '#000', hotHex: '#e4002b', ledOn: '#ffd500', ledOff: '#fff' },
+    blueprint: { hot: [255, 138, 48], warm: [255, 190, 104], cold: [86, 196, 255], luke: [160, 180, 215], streamCold: [86, 196, 255], streamHot: [255, 138, 48],
+      ink: '#0c3470', hotHex: '#ff8a30', ledOn: '#ff8a30', ledOff: '#eaf3ff' },
+    textbook: { hot: [193, 80, 46], warm: [224, 140, 72], cold: [47, 127, 134], luke: [158, 172, 165], streamCold: [110, 170, 172], streamHot: [205, 110, 80],
+      ink: '#2b2a28', hotHex: '#c1502e', ledOn: '#d9a32b', ledOff: '#f6efdd' },
+  }[STYLE],
+}
+const { hot: HOT, warm: WARM, cold: COLD, luke: LUKE, streamCold: STREAM_COLD, streamHot: STREAM_HOT } = PALETTE
+const { ink: INK, hotHex: HOT_HEX, ledOn: LED_ON, ledOff: LED_OFF } = PALETTE
+
+const SINK0 = [930, 398, 580, 326], SINK = [950, 402, 560, 315], HOUSE = [608, 500, 1244, 700]
+const TANK = [752, 700, 676, 380], WIDE = [0, 200, 1920, 1080]
+const CAMS = [[0, SINK0], [5.6, SINK], [6.2, SINK], [8.6, HOUSE], [12.6, HOUSE], [14.2, TANK], [24, TANK],
+  [25.8, WIDE], [28.6, WIDE], [30.4, SINK], [41.4, SINK], [43, HOUSE], [59, HOUSE]]
+
+const CAPS = [
+  [1.2, 6.2, 'You turn the hot dial, and hot water comes out. But where was it a second ago?'],
+  [6.6, 12.8, 'Follow the pipe down. It leads to a water heater: a tank of 40–50 gallons that’s kept hot around the clock.'],
+  [13.2, 18.2, 'The tank is always full. Cold water enters at the bottom, and the hottest water floats to the top, right where the outlet is.'],
+  [18.5, 24, 'It stays hot two ways: foam insulation, like a thermos, and a thermostat that fires the burner when the water dips below about 120°F.'],
+  [24.4, 29.8, 'So what pushes it upstairs? Not a pump in your house. The city’s water supply presses on your pipes at about 50 psi, all the time.'],
+  [30.4, 35.8, 'Open the tap and that pressure pushes cold water into the tank, shoving hot water out the top and up to your sink.'],
+  [36.1, 42.2, 'Why the wait? Water sitting in the pipe has cooled off. It has to be flushed out before fresh hot water arrives.'],
+]
+// timed in real seconds, during the valve close-up
+const INS_CAPS = [
+  [30.7, 35.2, 'That pressurized water is already waiting at your faucet. A rubber washer, pressed over a small opening, holds it back.'],
+  [35.5, 41.2, 'Turning the handle unscrews a threaded stem, lifting the washer off the opening. The pressure does the rest.'],
+]
+
+const OPEN = [[2.6, 0], [3.5, 1], [17.6, 1], [18.2, 0], [30.29, 0], [30.3, 1], [35.2, 1], [35.7, 0], [38, 0], [38.6, 1]]
+const COLD_LEVEL = [[3.5, 0], [13, .1], [18, .45], [18.6, .45], [23.4, 0], [30.9, 0], [35.5, .28], [38.2, .28], [42, .45], [48, .5]]
+const TEMP = [[13, 120], [18, 106], [18.6, 106], [23.4, 120], [30.9, 120], [35.5, 111], [38.2, 112], [42, 107], [48, 108]]
+
+// build repeated bits
+const el = (parent, name, attrs) => {
+  const node = document.createElementNS(NS, name)
+  for (const k in attrs) node.setAttribute(k, attrs[k])
+  parent.appendChild(node)
+  return node
+}
+const flames = Array.from({ length: 7 }, (_, i) => {
+  const g = el($('flames'), 'g', {})
+  el(g, 'path', { d: 'M0,0 C-9,-5 -6,-14 0,-24 C6,-14 9,-5 0,0', fill: '#ff8a2a' })
+  el(g, 'path', { d: 'M0,0 C-4,-3 -3,-8 0,-13 C3,-8 4,-3 0,0', fill: '#ffe07a' })
+  return g
+})
+const bubbles = Array.from({ length: 12 }, () => el($('bubbles'), 'circle', { r: 2.5 }))
+const puffs = Array.from({ length: 7 }, () => el($('steam'), 'circle', {}))
+const chevs = Array.from({ length: 9 }, (_, i) =>
+  el($('chev'), 'path', { d: 'M-7,-5 L0,0 L-7,5', transform: `translate(${270 + i * 108} 1040)` }))
+const flowPaths = [...document.querySelectorAll('.flow')]
+const hotW = $('hotW'), hotFront = $('hotFront')
+const HOT_LEN = hotW.getTotalLength()
+hotFront.setAttribute('stroke-dasharray', `${HOT_LEN} ${HOT_LEN}`)
+const rows = [...document.querySelectorAll('#recap .row')]
+
+// comic restyle: flat primaries, black ink, Ben-Day dot fills, and onomatopoeia bursts
+const COMIC_COLORS = {
+  '#1d2a35': '#000', '#dcecf3': 'url(#dotsBlue)', '#bfe1ef': 'url(#dotsBlue)', 'url(#earth)': 'url(#dotsEarth)',
+  '#eadfcb': 'url(#dotsRed)', '#cfcac2': 'url(#dotsBlack)', '#7d5f43': 'url(#dotsEarth)', '#c9a24a': 'url(#dotsEarth)',
+  '#e8502a': '#e4002b', '#b9484a': '#e4002b', '#8c6a4a': '#e4002b', '#c63d1c': '#e4002b', '#ff8a2a': '#e4002b',
+  '#2f8fd8': '#0a5fd6', '#7fae5e': '#1faa4b', '#6aa257': '#1faa4b', '#5f994f': '#1faa4b',
+  '#ffe9a8': '#ffd500', '#a57f58': '#ffd500', '#f3d27a': '#ffd500', '#c9a36f': '#ffd500', '#d6b582': '#ffd500',
+  '#c99a6b': '#ffd500', '#f3d98b': '#ffd500', '#ffd54a': '#ffd500', '#ffe07a': '#ffd500', '#d9b25c': '#ffd500',
+  '#a9c7dd': '#ffd500', '#ffb300': '#000', '#59626b': '#000', '#6f5238': '#000', '#8d9499': '#000', '#2a2f36': '#000',
+  '#3a3f46': '#000', '#5a6772': '#000', '#e7eef2': '#fff', '#f6efe3': '#fff', '#b8c2c9': '#fff', '#fbfbf8': '#fff',
+  '#f2f2ee': '#fff', '#c3ced6': '#fff', '#6b7480': '#fff', '#b8c6d0': '#fff', '#fffaf0': '#fff', '#eef2f4': '#fff',
+}
+const DOTS = [...document.querySelectorAll('pattern')]
+const BURSTS = [
+  { text: 'WHOOSH!', x: 690, y: 640, a: 3.6, b: 5.8, rot: -9 },
+  { text: 'CLICK!', x: 300, y: 380, a: 18.4, b: 20, rot: -12, size: .8 },
+  { text: 'FWOOMP!', x: 1650, y: 640, a: 19, b: 21, rot: 8 },
+  { text: 'SQUEAK!', x: 1190, y: 290, a: 35.7, b: 38.6, rot: -7, size: .85 },
+  { text: 'BRRR!', x: 830, y: 135, a: 49.8, b: 52.2, rot: -6, size: .68 },
+]
+if (COMIC) {
+  document.body.classList.add('comic')
+  document.querySelectorAll('svg *').forEach((node) => {
+    for (const attr of ['fill', 'stroke', 'stop-color']) {
+      const next = COMIC_COLORS[(node.getAttribute(attr) || '').toLowerCase()]
+      if (next) node.setAttribute(attr, next)
+    }
+    if (node.style && node.style.fill) node.style.fill = node.style.fill === 'rgb(198, 61, 28)' ? '#e4002b' : '#0a5fd6'
+  })
+  document.querySelectorAll('.nocomic').forEach((node) => node.remove())
+  // ink outlines on shapes that were borderless
+  document.querySelectorAll('#svg > circle[r="46"], #svg > g > circle[r="46"], #svg > g > circle[r="58"]').forEach((node) => {
+    node.setAttribute('stroke', '#000'); node.setAttribute('stroke-width', 5)
+  })
+  $('steam').setAttribute('stroke', '#000'); $('steam').setAttribute('stroke-width', 1.4)
+  BURSTS.forEach((b, i) => {
+    const pts = Array.from({ length: 28 }, (_, k) => {
+      const jitter = (Math.sin((k + i * 7) * 12.9898) * 43758.5453) % 1
+      const r = k % 2 ? 62 : 100 + 22 * Math.abs(jitter)
+      const ang = (k / 28) * Math.PI * 2
+      return `${(Math.cos(ang) * r * 1.75).toFixed(1)},${(Math.sin(ang) * r).toFixed(1)}`
+    }).join(' ')
+    b.node = document.createElement('div')
+    b.node.className = 'burst'
+    b.node.style.left = b.x + 'px'; b.node.style.top = b.y + 'px'
+    b.node.innerHTML = `<svg width="1" height="1"><polygon points="${pts}" transform="translate(9 9)" fill="#000"/>
+      <polygon points="${pts}" fill="#ffd500" stroke="#000" stroke-width="6" stroke-linejoin="round"/>
+      <text class="big" y="26" text-anchor="middle" font-size="76" fill="#e4002b" stroke="#000" stroke-width="7"
+        paint-order="stroke" stroke-linejoin="round">${b.text}</text></svg>`
+    $('bursts').appendChild(b.node)
+  })
+}
+const recolor = (fn) => document.querySelectorAll('svg *').forEach((node) => {
+  if (node.closest('defs')) return
+  for (const attr of ['fill', 'stroke']) {
+    const value = (node.getAttribute(attr) || '').toLowerCase()
+    if (value && value !== 'none') { const next = fn(value, attr, node); if (next) node.setAttribute(attr, next) }
+  }
+})
+if (STYLE === 'blueprint') {
+  document.body.classList.add('blueprint')
+  const PAPER = '#12408c', LINE = '#eaf3ff', ORANGE = '#ff8a30', CYAN = '#56c4ff'
+  const KEEP = { '#e8502a': ORANGE, '#ff8a2a': ORANGE, '#c63d1c': ORANGE, '#2f8fd8': CYAN, '#ffe07a': '#ffd9a0', '#ffd54a': '#ffd9a0',
+    '#ffb300': '#ffd9a0', '#fff': '#fff', '#dcecf3': 'url(#bpGrid)', 'url(#earth)': 'url(#bpHatch)', '#f3d98b': 'url(#bpInsul)',
+    '#2a2f36': '#0c3470', '#fffaf0': '#0f3878' }
+  recolor((value, attr, node) => {
+    if (KEEP[value]) return KEEP[value]
+    if (value.startsWith('url(')) return null
+    if (node.tagName === 'text' || attr === 'stroke') return LINE
+    // every other filled shape becomes blank paper with a drafted outline
+    if (!node.getAttribute('stroke') && node.tagName !== 'g') { node.setAttribute('stroke', LINE); node.setAttribute('stroke-width', 2) }
+    return PAPER
+  })
+  for (const id of ['clouds', 'steam']) { $(id).setAttribute('fill', 'none'); $(id).setAttribute('stroke', LINE); $(id).setAttribute('stroke-width', 1.5) }
+  document.querySelectorAll('.lbl').forEach((node) => {
+    if (node.style.fill) node.style.fill = node.style.fill === 'rgb(198, 61, 28)' ? ORANGE : CYAN
+  })
+}
+if (STYLE === 'textbook') {
+  document.body.classList.add('textbook')
+  const INKC = '#2b2a28', BRICK = '#c1502e', TEAL = '#2f7f86', MUSTARD = '#d9a32b', PAPER = '#f6efdd'
+  const MAP = { '#1d2a35': INKC, '#dcecf3': '#efe6d0', '#ffe9a8': MUSTARD, 'url(#earth)': '#a39370', '#7fae5e': '#7d9a5a', '#6aa257': TEAL,
+    '#5f994f': TEAL, '#6f5238': INKC, '#59626b': INKC, '#b9484a': BRICK, '#e7eef2': PAPER, '#2f8fd8': TEAL, '#e8502a': BRICK,
+    '#eadfcb': PAPER, '#cfcac2': '#ddd3ba', '#8d9499': INKC, '#a57f58': MUSTARD, '#8c6a4a': TEAL, '#f3d27a': MUSTARD, '#bfe1ef': '#b9d6d2',
+    '#c9a36f': MUSTARD, '#d6b582': '#e3b84f', '#c99a6b': MUSTARD, '#7d5f43': '#8a6a2a', '#b8c6d0': '#d5d9d0', '#b8c2c9': '#d5d9d0',
+    '#c3ced6': '#e9e2cd', '#f3d98b': '#e3b84f', '#2a2f36': INKC, '#6b7480': '#8b8778', '#ff8a2a': BRICK, '#ffe07a': '#e3b84f',
+    '#ffb300': MUSTARD, '#ffd54a': MUSTARD, '#c63d1c': BRICK, '#fffaf0': PAPER, '#d9b25c': MUSTARD, '#c9a24a': '#b98a1f',
+    '#eef2f4': PAPER, '#3a3f46': INKC, '#a9c7dd': '#e3b84f', '#5a6772': '#6b6557', '#f6efe3': PAPER, '#fbfbf8': PAPER, '#f2f2ee': PAPER }
+  recolor((value) => MAP[value])
+  $('clouds').setAttribute('fill', '#fbf7ec')
+  document.querySelectorAll('.lbl').forEach((node) => {
+    if (node.style.fill) node.style.fill = node.style.fill === 'rgb(198, 61, 28)' ? BRICK : '#1f5f66'
+  })
+}
+if (STYLE) { $('tw0').setAttribute('stop-color', `rgb(${HOT})`); $('tw1').setAttribute('stop-color', `rgb(${WARM})`) }
+window.ready = Promise.all([document.fonts.ready, ...(COMIC ? [document.fonts.load('30px Bangers'), document.fonts.load('700 30px "Comic Neue"')] : [])])
+
+const show = (id, o) => { $(id).style.opacity = o; $(id).style.display = o <= 0 ? 'none' : '' }
+
+function render(rt) {
+  const inIns = rt >= INS0 && rt < INS0 + INS
+  const t = rt < INS0 ? rt : Math.max(INS0, rt - INS)
+  const vo = kf(rt, [[35.6, 0], [38.6, 1]], ease)
+
+  // camera
+  let cam = CAMS[CAMS.length - 1][1]
+  for (let i = 1; i < CAMS.length; i++) {
+    if (rt <= CAMS[i][0]) {
+      const p = ease(clamp((rt - CAMS[i - 1][0]) / (CAMS[i][0] - CAMS[i - 1][0])))
+      cam = CAMS[i - 1][1].map((v, j) => lerp(v, CAMS[i][1][j], p))
+      break
+    }
+  }
+  svg.setAttribute('viewBox', cam.join(' '))
+  // keep the Ben-Day dots a constant size on screen whatever the zoom
+  if (COMIC) DOTS.forEach((p) => p.setAttribute('patternTransform', `scale(${(2 * cam[2] / 1920).toFixed(4)})`))
+
+  // tap, stream, steam
+  const open = inIns ? vo : kf(t, OPEN, ease)
+  const front = t < 36 ? 1 : kf(t, [[38.6, 0], [41.4, 1]])
+  const streamHot = clamp((front - .9) / .1)
+  $('dialHot').setAttribute('transform', `translate(1318 556) rotate(${-100 * open})`)
+  const streamCol = mix(STREAM_COLD, STREAM_HOT, streamHot)
+  $('stream').setAttribute('height', 92 * open)
+  $('stream').setAttribute('fill', streamCol)
+  $('pool').setAttribute('fill', streamCol)
+  $('pool').style.opacity = open
+  puffs.forEach((c, i) => {
+    const ph = (rt * .45 + i / puffs.length) % 1
+    c.setAttribute('cx', 1442 + Math.sin(i * 2.1 + ph * 5) * 9)
+    c.setAttribute('cy', 626 - ph * 78)
+    c.setAttribute('r', 5 + ph * 9)
+    c.setAttribute('opacity', open * streamHot * Math.sin(ph * Math.PI) * .75)
+  })
+  show('hint', win(t, 1.4, 4.4))
+  const ringOn = win(t, 2.4, 3.8, .3) + win(rt, 35.2, 39, .3) + win(t, 37.8, 39, .3)
+  $('ring').setAttribute('opacity', ringOn * (.5 + .5 * Math.sin(rt * 9)))
+  $('ring').setAttribute('r', 21 + 3 * Math.sin(rt * 9))
+
+  // pipes
+  flowPaths.forEach((p) => { p.setAttribute('stroke-dashoffset', -rt * 62); p.style.opacity = open })
+  const cooled = kf(t, [[36, 0], [37.6, 1]])
+  hotW.setAttribute('stroke', mix(HOT, LUKE, cooled))
+  hotFront.setAttribute('stroke-dashoffset', HOT_LEN * (1 - front))
+  hotFront.style.opacity = t > 36 ? 1 : 0
+  chevs.forEach((c, i) => c.setAttribute('opacity', win(t, 25.4, 30.2) * (.2 + .8 * Math.max(0, Math.sin(rt * 5 - i * .8)))))
+
+  // tracer runs backwards from faucet to tank
+  const tr = hotW.getPointAtLength(HOT_LEN * (1 - kf(t, [[8.4, 0], [11.2, 1]], ease)))
+  $('tracer').setAttribute('transform', `translate(${tr.x} ${tr.y})`)
+  show('tracer', win(t, 8.2, 11.8, .3))
+
+  // tank
+  const level = kf(t, COLD_LEVEL)
+  const coldCol = mix(COLD, WARM, 1 - clamp(level / .05))
+  $('tw1').setAttribute('offset', clamp(1 - level - .14))
+  $('tw2').setAttribute('offset', clamp(1 - level + .03))
+  $('tw2').setAttribute('stop-color', coldCol)
+  $('tw3').setAttribute('stop-color', coldCol)
+  const burner = win(t, 18.5, 23.6, .3) + clamp((t - 32.5) / .3)
+  flames.forEach((g, i) => {
+    const s = burner * (.75 + .25 * Math.sin(rt * 19 + i * 1.7))
+    g.setAttribute('transform', `translate(${1010 + i * 20} 984) scale(${.8 * burner}, ${s})`)
+  })
+  bubbles.forEach((c, i) => {
+    const ph = (rt * .5 + i * .37) % 1
+    c.setAttribute('cx', 995 + ((i * 53) % 105) + Math.sin(ph * 7 + i) * 4)
+    c.setAttribute('cy', 944 - ph * 150)
+    c.setAttribute('opacity', burner * .45 * Math.sin(ph * Math.PI))
+  })
+  $('temp').textContent = Math.round(kf(t, TEMP)) + '°F'
+  $('led').setAttribute('fill', burner > .5 ? LED_ON : LED_OFF)
+  if (!COMIC) show('click', win(t, 18.4, 19.6, .2))
+
+  // labels
+  show('lHeater', win(t, 10.8, 12.9))
+  show('lPorts', win(t, 14, 24.2))
+  show('lDip', win(t, 14.8, 18.3))
+  show('lIns', win(t, 19, 24.2))
+  show('lTherm', win(t, 20.2, 24.2))
+  show('lBurn', win(t, 21, 24.2))
+  show('lCity', win(t, 25.6, 29))
+  show('lPsi', win(t, 26.2, 29.2))
+  show('lPush', win(t, 32.2, 35.8))
+  show('lCool', win(t, 37.2, 40.4))
+  $('cloud1').setAttribute('transform', `translate(${rt * 2.5} 0)`)
+  $('cloud2').setAttribute('transform', `translate(${-rt * 1.8} 0)`)
+
+  // overlays
+  show('title', win(t, .3, 5.4, .6))
+  $('stamp').style.opacity = 1 - win(t, 0, 5.8, .4)
+  const capT = inIns ? rt : t
+  const cap = (inIns ? INS_CAPS : CAPS).find(([a, b]) => capT >= a && capT <= b)
+  if (cap && STYLE === 'textbook') {
+    // numbered like textbook figures, in running order
+    const n = inIns ? 6 + INS_CAPS.indexOf(cap) : CAPS.indexOf(cap) + (CAPS.indexOf(cap) > 4 ? 3 : 1)
+    $('cap').innerHTML = `<b>FIG. ${n}</b>${cap[2]}`
+  } else if (cap) $('cap').textContent = cap[2]
+  show('cap', cap ? win(capT, cap[0], cap[1], .3) : 0)
+
+  if (COMIC) BURSTS.forEach((b) => {
+    const pop = 1 + .3 * Math.sin(Math.PI * clamp((rt - b.a) / .4)) + .03 * Math.sin(rt * 16)
+    b.node.style.display = rt >= b.a && rt <= b.b ? '' : 'none'
+    b.node.style.transform = `rotate(${b.rot + 2 * Math.sin(rt * 11)}deg) scale(${(b.size || 1) * clamp((rt - b.a) / .12) * pop * clamp((b.b - rt) / .12)})`
+  })
+
+  // valve close-up
+  show('valve', win(rt, 31, INS0 + INS, .45))
+  $('vMove').setAttribute('transform', `translate(0 ${-56 * vo})`)
+  const hw = 22 + 98 * Math.abs(Math.cos(vo * Math.PI * 2))
+  $('vBar').setAttribute('x', 440 - hw)
+  $('vBar').setAttribute('width', hw * 2)
+  $('vWater').style.opacity = clamp((vo - .08) / .35)
+  $('vFlow').setAttribute('stroke-dashoffset', -rt * 150)
+  $('vFlow').style.opacity = vo
+  $('vPress').setAttribute('transform', `translate(0 ${-7 * Math.abs(Math.sin(rt * 4))})`)
+  $('vPress').style.opacity = 1 - clamp(vo / .2)
+  $('vTurn').style.opacity = win(rt, 35.2, 38.9, .3)
+  $('vState').textContent = vo > .5 ? 'OPEN' : 'CLOSED'
+  $('vPill').setAttribute('fill', vo > .5 ? HOT_HEX : INK)
+  $('vFoot').style.opacity = clamp((rt - 39) / .4)
+  show('recap', clamp((t - 42.5) / .6))
+  rows.forEach((r, i) => { r.style.opacity = clamp((t - 43 - i * .9) / .5) })
+}
+window.render = render
+window.DURATION = DURATION
+window.FPS = FPS
+
+if (new URLSearchParams(location.search).has('capture')) {
+  render(0)
+} else {
+  // standalone playback: loops, click to pause
+  const fit = () => { $('stage').style.transform = `scale(${Math.min(innerWidth / 1920, innerHeight / 1080)})` }
+  addEventListener('resize', fit); fit()
+  let t = 0, last = performance.now(), paused = false
+  addEventListener('click', () => { paused = !paused })
+  const tick = (now) => {
+    if (!paused) t = (t + (now - last) / 1000) % (DURATION + 1.5)
+    last = now
+    render(Math.min(t, DURATION))
+    requestAnimationFrame(tick)
+  }
+  requestAnimationFrame(tick)
+}
+</script>
+</body>
+</html>

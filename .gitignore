@@ -1,0 +1,5 @@
+node_modules
+.DS_Store
+out/still-*.jpg
+out/mockups
+out/hot-water-comic.mp4
